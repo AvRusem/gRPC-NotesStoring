@@ -1,0 +1,36 @@
+syntax = "proto3";
+package notes;
+
+option go_package = "cu.ru/pb";
+option java_package = "ru.culab.week11";
+option java_multiple_files = true;
+
+
+message NoteRequest {
+  string title = 1;
+  string content = 2;
+}
+
+message Note {
+  int32 id = 1;
+  string title = 2;
+  string content = 3;
+}
+
+message IdRequest {
+  int32 id = 1;
+}
+
+message Empty {}
+
+message SearchRequest {
+  string pattern = 1;
+}
+
+service NotesService {
+  rpc CreateNote(NoteRequest) returns (Note);
+  rpc GetNote(IdRequest) returns (Note);
+  rpc UpdateNote(Note) returns (Empty);
+  rpc DeleteNote(IdRequest) returns (Empty);
+  rpc SearchNotes(SearchRequest) returns (stream Note);
+}
