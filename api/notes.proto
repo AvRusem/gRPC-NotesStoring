@@ -12,13 +12,13 @@ message NoteRequest {
 }
 
 message Note {
-  int32 id = 1;
+  int64 id = 1;
   string title = 2;
   string content = 3;
 }
 
 message IdRequest {
-  int32 id = 1;
+  int64 id = 1;
 }
 
 message Empty {}
@@ -27,10 +27,14 @@ message SearchRequest {
   string pattern = 1;
 }
 
+message Notes {
+    repeated Note notes = 1;
+}
+
 service NotesService {
   rpc CreateNote(NoteRequest) returns (Note);
   rpc GetNote(IdRequest) returns (Note);
   rpc UpdateNote(Note) returns (Empty);
   rpc DeleteNote(IdRequest) returns (Empty);
-  rpc SearchNotes(SearchRequest) returns (stream Note);
+  rpc SearchNotes(SearchRequest) returns (Notes);
 }

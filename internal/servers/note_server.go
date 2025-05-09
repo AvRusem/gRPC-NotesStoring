@@ -97,24 +97,25 @@ func (s *notesServer) DeleteNote(ctx context.Context, req *pb.IdRequest) (*pb.Em
 	return &pb.Empty{}, nil
 }
 
-func (s *notesServer) SearchNotes(req *pb.SearchRequest, stream grpc.ServerStreamingServer[pb.Note]) error {
+func (s *notesServer) SearchNotes(ctx context.Context, req *pb.SearchRequest) (*pb.Notes, error) {
 	pattern := req.GetPattern()
 	if pattern == "" {
-		return status.Errorf(codes.InvalidArgument, PatternEmpty)
+		return nil, status.Errorf(codes.InvalidArgument, PatternEmpty)
 	}
 
 	notes, err := s.service.FindLike(pattern)
 	if err != nil {
-		return status.Errorf(codes.Internal, InternalServerError, err)
+		return nil, status.Errorf(codes.Internal, InternalServerError, err)
 	}
 
-	for _, note := range notes {
-		if err := stream.Send(mappers.NoteToProto(note)); err != nil {
-			return status.Errorf(codes.Internal, InternalServerError, err)
-		}
+	protoNotes := make([]*pb.Note, len(notes))
+	for i, note := range notes {
+		protoNotes[i] = mappers.NoteToProto(note)
 	}
 
-	return nil
+	return &pb.Notes{
+		Notes: protoNotes,
+	}, nil
 }
 
 func getService(dsn string) *services.NoteService {

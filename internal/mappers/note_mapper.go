@@ -14,7 +14,7 @@ func NoteFromProto(note *pb.NoteRequest) models.Note {
 
 func NoteToProto(note models.Note) *pb.Note {
 	return &pb.Note{
-		Id:      int32(note.ID),
+		Id:      int64(note.ID),
 		Title:   note.Title,
 		Content: note.Content,
 	}
