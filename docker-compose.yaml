@@ -1,0 +1,10 @@
+services:
+  db:
+    image: postgres:alpine
+    container_name: go_postgres_db
+    environment:
+      POSTGRES_USER: go_user
+      POSTGRES_PASSWORD: go_password
+      POSTGRES_DB: go_db
+    ports:
+      - "5432:5432"
